@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>FYC - NEXTCLOUD</title>
+	<base href=".">
+	<meta name="pathname" content="fyc-nextcloud.html">
+	<meta name="description" content="Shared - FYC - NEXTCLOUD">
+	<meta property="og:title" content="FYC - NEXTCLOUD">
+	<meta property="og:description" content="Shared - FYC - NEXTCLOUD">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="fyc-nextcloud.html">
+	<meta property="og:image" content=".attachments.390/architechture.png">
+	<meta charset="UTF-8">
+	<meta property="og:site_name" content="Shared">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0">
+	<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="site-lib/rss.xml">
+	<script async="" id="webpage-script" src="site-lib/scripts/webpage.js"
+		onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script>
+	<script async="" id="graph-wasm-script" src="site-lib/scripts/graph-wasm.js"
+		onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script>
+	<script async="" id="graph-render-worker-script" src="site-lib/scripts/graph-render-worker.js"
+		onload="this.onload=null;this.setAttribute(&quot;loaded&quot;, &quot;true&quot;)"></script>
+	<link rel="icon" href="site-lib/media/favicon.png">
+	<link rel="stylesheet" href="site-lib/styles/obsidian.css">
+	<link rel="preload" href="site-lib/styles/global-variable-styles.css" as="style"
+		onload="this.onload=null;this.rel='stylesheet'"><noscript>
+		<link rel="stylesheet" href="site-lib/styles/global-variable-styles.css">
+	</noscript>
+	<link rel="preload" href="site-lib/styles/main-styles.css" as="style"
+		onload="this.onload=null;this.rel='stylesheet'"><noscript>
+		<link rel="stylesheet" href="site-lib/styles/main-styles.css">
+	</noscript>
+	<style>
+		body {
+			--line-width: 40em;
+			--line-width-adaptive: 40em;
+			--file-line-width: 40em;
+			--sidebar-width: min(20em, 80vw);
+			--collapse-arrow-size: 11px;
+			--tree-vertical-spacing: 1.3em;
+			--sidebar-margin: 12px
+		}
+
+		:root {
+			background-color: #202124
+		}
+
+		.sidebar {
+			height: 100%;
+			font-size: 14px;
+			z-index: 10;
+			min-width: calc(var(--sidebar-width) + var(--divider-width-hover));
+			max-width: calc(var(--sidebar-width) + var(--divider-width-hover));
+			position: relative;
+			overflow: hidden;
+			overflow: clip;
+			transition: min-width ease-in-out, max-width ease-in-out;
+			transition-duration: .2s;
+			contain: size
+		}
+
+		#left-sidebar {
+			left: 0
+		}
+
+		#right-sidebar {
+			right: 0
+		}
+
+		.sidebar.is-collapsed {
+			min-width: 0;
+			max-width: 0
+		}
+
+		.sidebar.floating {
+			position: absolute
+		}
+
+		.sidebar .leaf-content {
+			height: 100%;
+			min-width: calc(var(--sidebar-width) - var(--divider-width-hover));
+			top: 0;
+			padding: var(--sidebar-margin);
+			padding-top: 4em;
+			line-height: var(--line-height-tight);
+			background-color: var(--background-secondary);
+			transition: background-color, border-right, border-left, box-shadow;
+			transition-duration: var(--color-fade-speed);
+			transition-timing-function: ease-in-out;
+			position: absolute;
+			display: flex;
+			flex-direction: column
+		}
+
+		.sidebar:not(.is-collapsed) .leaf-content {
+			min-width: calc(max(100%, var(--sidebar-width)) - 3px);
+			max-width: calc(max(100%, var(--sidebar-width)) - 3px)
+		}
+
+		#left-sidebar-content {
+			left: 0;
+			border-top-right-radius: var(--radius-l);
+			border-bottom-right-radius: var(--radius-l)
+		}
+
+		#right-sidebar-content {
+			right: 0;
+			border-top-left-radius: var(--radius-l);
+			border-bottom-left-radius: var(--radius-l)
+		}
+
+		.sidebar #left-sidebar-content,
+		.sidebar #right-sidebar-content {
+			contain: none !important;
+			container-type: normal !important;
+			animation: none !important
+		}
+
+		.sidebar:has(.leaf-content:empty):has(.topbar-content:empty) {
+			display: none
+		}
+
+		.sidebar-topbar {
+			height: calc(2.3em + 2 * var(--sidebar-margin));
+			width: var(--sidebar-width);
+			padding: var(--sidebar-margin);
+			z-index: 1;
+			position: fixed;
+			display: flex;
+			align-items: center;
+			transition: width ease-in-out;
+			transition-duration: inherit
+		}
+
+		.sidebar.is-collapsed .sidebar-topbar {
+			width: calc(2.3em + var(--sidebar-margin) * 2)
+		}
+
+		.sidebar .sidebar-topbar.is-collapsed {
+			width: 0
+		}
+
+		#left-sidebar .sidebar-topbar {
+			left: 0;
+			flex-direction: row;
+			border-top-right-radius: var(--radius-l)
+		}
+
+		#right-sidebar .sidebar-topbar {
+			right: 0;
+			flex-direction: row-reverse;
+			border-top-left-radius: var(--radius-l)
+		}
+
+		#left-sidebar .topbar-content {
+			margin-right: calc(2.3em + var(--sidebar-margin));
+			flex-direction: row
+		}
+
+		#right-sidebar .topbar-content {
+			margin-left: calc(2.3em + var(--sidebar-margin));
+			flex-direction: row-reverse
+		}
+
+		.topbar-content {
+			overflow: hidden visible;
+			overflow: clip visible;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			transition: inherit
+		}
+
+		.sidebar.is-collapsed .topbar-content {
+			width: 0;
+			transition: inherit
+		}
+
+		.clickable-icon.sidebar-collapse-icon {
+			background-color: transparent;
+			color: var(--icon-color-focused);
+			padding: 2px !important;
+			margin: 0 !important;
+			height: 100% !important;
+			width: 2.3em !important;
+			margin-inline: 0.14em !important;
+			position: absolute
+		}
+
+		#left-sidebar .clickable-icon.sidebar-collapse-icon {
+			transform: rotateY(180deg);
+			right: var(--sidebar-margin)
+		}
+
+		#right-sidebar .clickable-icon.sidebar-collapse-icon {
+			transform: rotateY(180deg);
+			left: var(--sidebar-margin)
+		}
+
+		.clickable-icon.sidebar-collapse-icon svg.svg-icon {
+			width: 100%;
+			height: 100%
+		}
+
+		.feature-title {
+			margin-left: 1px;
+			text-transform: uppercase;
+			letter-spacing: .06em;
+			margin-top: .75em;
+			margin-bottom: .75em
+		}
+
+		.feature-header {
+			display: flex;
+			align-items: center;
+			padding-top: 0;
+			font-size: 1em;
+			padding-left: 0
+		}
+
+		body.floating-sidebars .sidebar {
+			position: absolute
+		}
+
+		body {
+			transition: background-color var(--color-fade-speed) ease-in-out
+		}
+
+		#navbar:not(:empty) {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: .5em 1em;
+			width: 100%
+		}
+
+		#main {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			width: 100%;
+			align-items: stretch;
+			justify-content: center
+		}
+
+		#main-horizontal {
+			display: flex;
+			flex-direction: row;
+			flex-grow: 1;
+			width: 100%;
+			align-items: stretch;
+			justify-content: center
+		}
+
+		#center-content {
+			flex-basis: 100%;
+			max-width: 100%;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			transition: opacity .2s ease-in-out;
+			contain: inline-size
+		}
+
+		.hide {
+			opacity: 0 !important;
+			transition: opacity .2s ease-in-out;
+			pointer-events: none
+		}
+
+		#center-content>.obsidian-document {
+			padding-left: 2em;
+			padding-right: 1em;
+			margin-bottom: 0;
+			width: 100%;
+			width: -webkit-fill-available;
+			width: -moz-available;
+			width: fill-available;
+			transition: background-color var(--color-fade-speed) ease-in-out;
+			border-top-right-radius: var(--window-radius, var(--radius-m));
+			border-top-left-radius: var(--window-radius, var(--radius-m));
+			overflow-x: hidden !important;
+			overflow-y: auto !important;
+			display: flex !important;
+			flex-direction: column !important;
+			align-items: center !important;
+			contain: inline-size
+		}
+
+		body #center-content>.obsidian-document>.markdown-preview-sizer {
+			padding-bottom: 80vh;
+			width: 100%;
+			max-width: var(--line-width);
+			flex-basis: var(--line-width);
+			transition: background-color var(--color-fade-speed) ease-in-out;
+			contain: inline-size
+		}
+
+		#center-content>.obsidian-document>div {
+			width: 100% !important;
+			transition: background-color var(--color-fade-speed) ease-in-out;
+			contain: inline-size
+		}
+
+		#center-content>.obsidian-document:not([data-type=markdown]).embed {
+			display: flex;
+			padding: 1em;
+			height: 100%;
+			width: 100%;
+			align-items: center;
+			justify-content: center
+		}
+
+		#center-content>.obsidian-document:not([data-type=markdown]).embed>* {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain
+		}
+
+		:not(h1, h2, h3, h4, h5, h6, li):has(> :is(.math, table)) {
+			overflow-x: auto !important
+		}
+
+		#center-content>.obsidian-document:not([data-type=markdown]) {
+			overflow-x: auto;
+			contain: content;
+			padding: 0;
+			margin: 0;
+			height: 100%
+		}
+
+		.obsidian-document[data-type=attachment] {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			width: 100%
+		}
+
+		.obsidian-document[data-type=attachment]>* {
+			outline: 0;
+			border: none;
+			box-shadow: none
+		}
+
+		.obsidian-document[data-type=attachment] :is(img) {
+			max-width: 90%;
+			max-height: 90%;
+			object-fit: contain
+		}
+
+		.obsidian-document[data-type=attachment]>:is(audio) {
+			width: 100%;
+			max-width: min(90%, var(--line-width))
+		}
+
+		.obsidian-document[data-type=attachment]>:is(embed, iframe, video) {
+			width: 100%;
+			height: 100%;
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain
+		}
+
+		.canvas-wrapper>:is(.header, .footer) {
+			z-index: 100;
+			position: absolute;
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			width: 100%;
+			align-items: center
+		}
+
+		.scroll-highlight {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 1000;
+			background-color: hsla(var(--color-accent-hsl), .25);
+			opacity: 0;
+			padding: 1em;
+			inset: 50%;
+			translate: -50% -50%;
+			border-radius: var(--radius-s)
+		}
+	</style>
+	<script
+		defer="">async function loadIncludes() { let e = document.querySelectorAll("link[itemprop='include']"); for (const t of e) { let e = t.getAttribute("href"); try { let o = ""; if (e.startsWith("https:") || e.startsWith("http:") || "file:" != window.location.protocol) { const n = await fetch(e); if (!n.ok) { console.log("Could not include file: " + e), t?.remove(); continue } o = await n.text() } else { const t = document.getElementById(btoa(encodeURI(e))); if (t) { const e = JSON.parse(decodeURI(atob(t.getAttribute("value") ?? ""))); o = e?.data ?? "" } } let n = document.createRange().createContextualFragment(o); t.before(n), t.remove(), console.log("Included text: " + o), console.log("Included file: " + e) } catch (o) { t?.remove(), console.log("Could not include file: " + e, o); continue } } } document.addEventListener("DOMContentLoaded", (() => { loadIncludes() })); let isFileProtocol = "file:" == location.protocol; function waitLoadScripts(e, t) { let o = e.map((e => document.getElementById(e + "-script"))); !function e(n) { let l = o[n], c = n + 1; l ? (l && "true" != l.getAttribute("loaded") || n < o.length && e(c), n < o.length && l.addEventListener("load", (() => e(c)))) : n < o.length ? e(c) : t() }(0) }</script>
+</head>
+
+<body class="publish css-settings-manager styled-scrollbars show-inline-title show-ribbon is-focused">
+	<script
+		defer="">let theme = localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); "dark" == theme ? (document.body.classList.add("theme-dark"), document.body.classList.remove("theme-light")) : (document.body.classList.add("theme-light"), document.body.classList.remove("theme-dark")), window.innerWidth < 480 ? document.body.classList.add("is-phone") : window.innerWidth < 768 ? document.body.classList.add("is-tablet") : window.innerWidth < 1024 ? document.body.classList.add("is-small-screen") : document.body.classList.add("is-large-screen")</script>
+	<div class="parsed-feature-container" style="display: contents;">
+		<link itemprop="include" href="site-lib/html/custom-head-content-content.html">
+	</div>
+	<div id="main">
+		<div id="navbar"></div>
+		<div id="main-horizontal">
+			<div id="left-content" class="leaf" style="--sidebar-width: var(--sidebar-width-left);">
+				<div id="left-sidebar" class="sidebar">
+					<div class="sidebar-handle"></div>
+					<div class="sidebar-topbar">
+						<div class="topbar-content">
+							<div id="search-container">
+								<div id="search-wrapper"><input enterkeyhint="search" type="search" spellcheck="false"
+										placeholder="Search...">
+									<div aria-label="Clear search" id="search-clear-button"></div>
+								</div>
+							</div>
+						</div>
+						<div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg"
+								width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+								stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+								<path
+									d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z">
+								</path>
+								<path d="M10 4V20"></path>
+								<path d="M4 7H7"></path>
+								<path d="M4 10H7"></path>
+								<path d="M4 13H7"></path>
+							</svg></div>
+					</div>
+					<div class="sidebar-content-wrapper">
+						<div id="left-sidebar-content" class="leaf-content">
+							<link itemprop="include" href="site-lib/html/file-tree-content.html">
+						</div>
+					</div>
+					<script
+						defer="">let ls = document.querySelector("#left-sidebar"); ls.classList.toggle("is-collapsed", window.innerWidth < 768); ls.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-left-width"));</script>
+				</div>
+			</div>
+			<div id="center-content" class="leaf">
+				<div class="obsidian-document markdown-preview-view markdown-rendered node-insert-event is-readable-line-width allow-fold-headings allow-fold-lists show-indentation-guide show-properties"
+					data-type="markdown">
+					<style id="MJX-CHTML-styles"></style>
+					<div class="markdown-preview-sizer markdown-preview-section">
+						<div class="header">
+							<h1 class="page-title heading inline-title" id="FYC_-_NEXTCLOUD_0">FYC - NEXTCLOUD</h1>
+							<div class="data-bar"></div>
+						</div>
+						<div class="markdown-preview-pusher" style="width: 1px; height: 0.1px; margin-bottom: 0px;">
+						</div>
+						<div class="el-ul">
+							<ul class="has-list-bullet">
+								<li data-line="0" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Global architecture"
+										data-href="#Global architecture" href="fyc-nextcloud.html#Global_architecture_0"
+										class="internal-link" target="_self" rel="noopener nofollow">Global
+										architecture</a></li>
+								<li data-line="1" dir="auto"><span class="list-bullet"></span><span
+										class="list-collapse-indicator collapse-indicator collapse-icon"><svg
+											xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+											stroke-linecap="round" stroke-linejoin="round"
+											class="svg-icon right-triangle">
+											<path d="M3 8L12 17L21 8"></path>
+										</svg></span><a data-tooltip-position="top"
+										aria-label="Install and configure Open" data-href="#Install and configure Open"
+										href="fyc-nextcloud.html#Install_and_configure_Open_0" class="internal-link"
+										target="_self" rel="noopener nofollow">Install and configure Open</a>
+									<ul class="has-list-bullet">
+										<li data-line="2" dir="auto"><span class="list-bullet"></span><a
+												data-tooltip-position="top"
+												aria-label="Install and configure Open > Opnsense proxmox config"
+												data-href="#Install and configure Open#Opnsense proxmox config"
+												href="#Install and configure Open#Opnsense proxmox config"
+												class="internal-link" target="_self" rel="noopener nofollow">Opnsense
+												proxmox config</a></li>
+									</ul>
+								</li>
+								<li data-line="3" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Opnsense installation"
+										data-href="#Opnsense installation"
+										href="fyc-nextcloud.html#Opnsense_installation_0" class="internal-link"
+										target="_self" rel="noopener nofollow">Opnsense installation</a></li>
+								<li data-line="4" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Create Vlans and LAN interface"
+										data-href="#Create Vlans and LAN interface"
+										href="fyc-nextcloud.html#Create_Vlans_and_LAN_interface_0" class="internal-link"
+										target="_self" rel="noopener nofollow">Create Vlans and LAN interface</a></li>
+								<li data-line="5" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Create Nextcloud Ubuntu VM"
+										data-href="#Create Nextcloud Ubuntu VM"
+										href="fyc-nextcloud.html#Create_Nextcloud_Ubuntu_VM_0" class="internal-link"
+										target="_self" rel="noopener nofollow">Create Nextcloud Ubuntu VM</a></li>
+								<li data-line="6" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Nextcloud Ubuntu configuration"
+										data-href="#Nextcloud Ubuntu configuration"
+										href="fyc-nextcloud.html#Nextcloud_Ubuntu_configuration_0" class="internal-link"
+										target="_self" rel="noopener nofollow">Nextcloud Ubuntu configuration</a></li>
+								<li data-line="7" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Install docker"
+										data-href="#Install docker" href="fyc-nextcloud.html#Install_docker_0"
+										class="internal-link" target="_self" rel="noopener nofollow">Install docker</a>
+								</li>
+								<li data-line="8" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Setting up nextcloud your domain name"
+										data-href="#Setting up nextcloud your domain name"
+										href="#Setting up nextcloud your domain name" class="internal-link"
+										target="_self" rel="noopener nofollow">Setting up nextcloud your domain name</a>
+								</li>
+								<li data-line="9" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Configure domain and https"
+										data-href="#Configure domain and https" href="#Configure domain and https"
+										class="internal-link" target="_self" rel="noopener nofollow">Configure domain
+										and https</a></li>
+								<li data-line="10" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Configure Haproxy"
+										data-href="#Configure Haproxy" href="#Configure Haproxy" class="internal-link"
+										target="_self" rel="noopener nofollow">Configure Haproxy</a></li>
+								<li data-line="11" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Configure nextcloud"
+										data-href="#Configure nextcloud" href="#Configure nextcloud"
+										class="internal-link" target="_self" rel="noopener nofollow">Configure
+										nextcloud</a></li>
+								<li data-line="12" dir="auto"><span class="list-bullet"></span><a
+										data-tooltip-position="top" aria-label="Recap" data-href="#Recap" href="#Recap"
+										class="internal-link" target="_self" rel="noopener nofollow">Recap</a></li>
+							</ul>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Global architecture" dir="auto" class="heading"
+								id="Global_architecture_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Global architecture</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="architechture.png" src=".attachments.390/architechture.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="architechture.png" src=".attachments.390/architechture.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Install and configure Open" dir="auto" class="heading"
+								id="Install_and_configure_Open_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Install and configure Open</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto">sense</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">For this example, we are gonna use opnsense as a firewall + reverse proxy !
+								It's open source, free ti use and super easy to understant when you are not familliar
+								with network configurations</p>
+						</div>
+						<div class="el-h3">
+							<h3 data-heading="Opnsense proxmox config" dir="auto" class="heading"
+								id="Opnsense_proxmox_config_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Opnsense proxmox config</h3>
+						</div>
+						<div class="el-p">
+							<p dir="auto">First, download the ISO and upload it to your Proxmox, then create a new VM
+								just like so 👍 </p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{5217B519-20F9-4111-A52A-34FC283BE25E}.png"
+									src=".attachments.390/{5217b519-20f9-4111-a52a-34fc283be25e}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{5217B519-20F9-4111-A52A-34FC283BE25E}.png"
+										src=".attachments.390/{5217b519-20f9-4111-a52a-34fc283be25e}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Name it as you want</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{DBB453BB-340C-4E5B-8FE0-70E6519931CD}.png"
+									src=".attachments.390/{dbb453bb-340c-4e5b-8fe0-70e6519931cd}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{DBB453BB-340C-4E5B-8FE0-70E6519931CD}.png"
+										src=".attachments.390/{dbb453bb-340c-4e5b-8fe0-70e6519931cd}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Add your ISO file and Linux type kernel 6.x</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{9B764843-00D0-485F-A532-DD0114AF824D}.png"
+									src=".attachments.390/{9b764843-00d0-485f-a532-dd0114af824d}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{9B764843-00D0-485F-A532-DD0114AF824D}.png"
+										src=".attachments.390/{9b764843-00d0-485f-a532-dd0114af824d}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Let SeaBIOS, by default and Default display and i440fx machine type let the
+								default SCSI controller and add Qemu Agent</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{C1A33AD3-8A5D-41EB-9087-BEA42D75B204}.png"
+									src=".attachments.390/{c1a33ad3-8a5d-41eb-9087-bea42d75b204}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{C1A33AD3-8A5D-41EB-9087-BEA42D75B204}.png"
+										src=".attachments.390/{c1a33ad3-8a5d-41eb-9087-bea42d75b204}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Add a bit of storage 60 Go should be enougth let the SCSI controller by
+								default and no cache</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{173223C5-ADAB-4471-8805-8A9564EF74BC}.png"
+									src=".attachments.390/{173223c5-adab-4471-8805-8a9564ef74bc}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{173223C5-ADAB-4471-8805-8A9564EF74BC}.png"
+										src=".attachments.390/{173223c5-adab-4471-8805-8a9564ef74bc}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Opnsesne is not very demanding in resources so 2 CPU should be enought and it
+								can run with only one if needed but be carefull, all your traffic will goes through this
+								one so we need some performances to get a high internet speed ! Let the x86-64-v2-AES by
+								default</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{EA2F7101-12C1-4403-AB9E-D22AE302B9F4}.png"
+									src=".attachments.390/{ea2f7101-12c1-4403-ab9e-d22ae302b9f4}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{EA2F7101-12C1-4403-AB9E-D22AE302B9F4}.png"
+										src=".attachments.390/{ea2f7101-12c1-4403-ab9e-d22ae302b9f4}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now add 4Go of RAM, this is a lots but it's needed for the installation (+3Go)
+								but we can lower it afterwards if needed !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{9E8F6BA0-8A9D-4220-B5BF-C5DB14801C20}.png"
+									src=".attachments.390/{9e8f6ba0-8a9d-4220-b5bf-c5db14801c20}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{9E8F6BA0-8A9D-4220-B5BF-C5DB14801C20}.png"
+										src=".attachments.390/{9e8f6ba0-8a9d-4220-b5bf-c5db14801c20}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Add the network, only one interface for now, we will add a second later ! Let
+								the defaults, VirtIO controller and vmbr0 default bridged interface</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{53AAF833-4DBE-412A-A6B4-AC78604BDA8A}.png"
+									src=".attachments.390/{53aaf833-4dbe-412a-a6b4-ac78604bda8a}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{53AAF833-4DBE-412A-A6B4-AC78604BDA8A}.png"
+										src=".attachments.390/{53aaf833-4dbe-412a-a6b4-ac78604bda8a}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now that's done, unckeck the "start after created" checkbox we need to add a
+								second networ interface first</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{AB6B3A32-EBC2-4488-815B-7676780F950B}.png"
+									src=".attachments.390/{ab6b3a32-ebc2-4488-815b-7676780f950b}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{AB6B3A32-EBC2-4488-815B-7676780F950B}.png"
+										src=".attachments.390/{ab6b3a32-ebc2-4488-815b-7676780f950b}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now go in the new VM section, and add a new network interface, same vmbr0
+								bridged default interface !</p>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Opnsense installation" dir="auto" class="heading"
+								id="Opnsense_installation_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Opnsense installation</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto">We are good to go, now you can start the VM and process the opnsense
+								installation 👍<br>
+								Once the VM is started, you should see a login screen, default credentials for opnsense
+								are : "root" and "opnsesne", but we are gonna install it first, because it's not done
+								yet !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">login with the followinf credentials to trigger the installation process :<br>
+								login : "installer" pass: "opnsense" </p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Follow the instructions to install opnsense, no redoundancy so exfat, don't
+								forget to change the default root password before restarting your VM ! </p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Once it's done, you whould have a fresh install for your opnsense, a default
+								WAN interface should have been created, get your ipv4 address and try <a
+									rel="noopener nofollow" class="external-link is-unresolved"
+									href="https://opnsense-ip" target="_self">https://opnsense-ip</a>, you should see a
+								login screen ! Login with your root credentials </p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{120D8D23-F5EB-472C-B4B5-85ECF755843C}.png"
+									src=".attachments.390/{120d8d23-f5eb-472c-b4b5-85ecf755843c}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{120D8D23-F5EB-472C-B4B5-85ECF755843C}.png"
+										src=".attachments.390/{120d8d23-f5eb-472c-b4b5-85ecf755843c}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{0222124D-5684-4335-A53B-215A07585224}.png"
+									src=".attachments.390/{0222124d-5684-4335-a53b-215a07585224}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{0222124D-5684-4335-A53B-215A07585224}.png"
+										src=".attachments.390/{0222124d-5684-4335-a53b-215a07585224}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now for security reason, at the moment you add a new LAN network in opnsense,
+								the default connexion to the web interface will shutdown, because you are accessing it
+								from your WAN adress which is not recommended ! So be carefull, thoses steps are crutial
+								if you don't want to lose access to your opnsense web interface !</p>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Create Vlans and LAN interface" dir="auto" class="heading"
+								id="Create_Vlans_and_LAN_interface_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Create Vlans and LAN interface</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto">First thing to do is to create a VLAN for our nextcloud service ! Well
+								basically, this is a web service accessible publically, so this service should go in a
+								DMZ, so we are gonna create a DMZ VLAN for our nextcloud VM :<br>
+								In Interfaces/Devices/VLAN, add this :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{A00E9B44-9317-4BAD-861E-0BE93AAF22D9}.png"
+									src=".attachments.390/{a00e9b44-9317-4bad-861e-0be93aaf22d9}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{A00E9B44-9317-4BAD-861E-0BE93AAF22D9}.png"
+										src=".attachments.390/{a00e9b44-9317-4bad-861e-0be93aaf22d9}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{B14D46F4-1BCF-40EA-A575-334126702262}.png"
+									src=".attachments.390/{b14d46f4-1bcf-40ea-a575-334126702262}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{B14D46F4-1BCF-40EA-A575-334126702262}.png"
+										src=".attachments.390/{b14d46f4-1bcf-40ea-a575-334126702262}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">For me, the WAN took vtnet0 so i'll take the vtnet1 to transport my LAN and
+								VLANs !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Once this done, we need to assign a new interface :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{F65E9541-EDE7-4BEF-8046-6E047CB2CC35}.png"
+									src=".attachments.390/{f65e9541-ede7-4bef-8046-6e047cb2cc35}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{F65E9541-EDE7-4BEF-8046-6E047CB2CC35}.png"
+										src=".attachments.390/{f65e9541-ede7-4bef-8046-6e047cb2cc35}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">in Interfaces/Assignments, look for your VLAN Device and add it as a new
+								interface !<br>
+								Then we will configure the interface to create a new VLAN 10.0.3.1/24 with no DHCP
+								server :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{6908324E-C04E-4043-817D-E782E99E90F2}.png"
+									src=".attachments.390/{6908324e-c04e-4043-817d-e782e99e90f2}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{6908324E-C04E-4043-817D-E782E99E90F2}.png"
+										src=".attachments.390/{6908324e-c04e-4043-817d-e782e99e90f2}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{64B5135F-8803-4ABC-943A-AD3A458E10D3}.png"
+									src=".attachments.390/{64b5135f-8803-4abc-943a-ad3a458e10d3}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{64B5135F-8803-4ABC-943A-AD3A458E10D3}.png"
+										src=".attachments.390/{64b5135f-8803-4abc-943a-ad3a458e10d3}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now with this done, we have a new VLAN 10.0.3.1/24</p>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Create Nextcloud Ubuntu VM" dir="auto" class="heading"
+								id="Create_Nextcloud_Ubuntu_VM_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Create Nextcloud Ubuntu VM</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto">I choosed to use Ubuntu 24.04 LTS as it's a simple distro all build, with
+								nvidia graphic drivers compatibility. It is also recommended by nextcloud to install it
+								on this distro because it's the most documented and used for nextcloud !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">But we have some extra config to make :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{B3858806-B826-4327-9FD2-B32B9F7C36F0}.png"
+									src=".attachments.390/{b3858806-b826-4327-9fd2-b32b9f7c36f0}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{B3858806-B826-4327-9FD2-B32B9F7C36F0}.png"
+										src=".attachments.390/{b3858806-b826-4327-9fd2-b32b9f7c36f0}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Choose the Ubuntu ISO you imported on your proxmox</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{2F1A29E5-E1D7-4648-A602-B3154F825028}.png"
+									src=".attachments.390/{2f1a29e5-e1d7-4648-a602-b3154f825028}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{2F1A29E5-E1D7-4648-A602-B3154F825028}.png"
+										src=".attachments.390/{2f1a29e5-e1d7-4648-a602-b3154f825028}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now this part changes a bit, select standar VGA for the display method and
+								choose q35 type machine with OVMF UEFI boot part, add Qemu agent ands select your
+								desired EFI storage, you can also pre-enroll keys !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{2C0D5261-622A-4FAA-A09A-DBCE7105B578}.png"
+									src=".attachments.390/{2c0d5261-622a-4faa-a09a-dbce7105b578}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{2C0D5261-622A-4FAA-A09A-DBCE7105B578}.png"
+										src=".attachments.390/{2c0d5261-622a-4faa-a09a-dbce7105b578}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now be shureto add extra space on this one because it is gonna be your cloud,
+								so basically where all your data will be stored ! Along with the AI models which are not
+								so lightweight ! As long as i have a SSD, i've checked the box SSD emulation, but this
+								depends on your configuration !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{21063803-D3D5-4F11-8450-FFAD579825E6} (2).png"
+									src=".attachments.390/{21063803-d3d5-4f11-8450-ffad579825e6}-(2).png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{21063803-D3D5-4F11-8450-FFAD579825E6} (2).png"
+										src=".attachments.390/{21063803-d3d5-4f11-8450-ffad579825e6}-(2).png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now for the CPU part, i'm gonna be generous, because we'll have clam AV
+								running in background with talk, fulltextsearch which takes 1G RAM and 1 VCPU, if we
+								want to work with AI, it is also recommended to add extra cores if you can !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{4F0879F2-55E6-433E-861B-F57B4203F9EF}.png"
+									src=".attachments.390/{4f0879f2-55e6-433e-861b-f57b4203f9ef}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{4F0879F2-55E6-433E-861B-F57B4203F9EF}.png"
+										src=".attachments.390/{4f0879f2-55e6-433e-861b-f57b4203f9ef}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Same for the RAM, here i put 16 Go because some models doesn't fit in my GPU
+								memory, so it will take space within my RAM ! And we want a smooth nextcloud experience
+								!</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{AB76BA97-0BC3-49FA-8DB4-20D9BB8FCB18}.png"
+									src=".attachments.390/{ab76ba97-0bc3-49fa-8db4-20d9bb8fcb18}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{AB76BA97-0BC3-49FA-8DB4-20D9BB8FCB18}.png"
+										src=".attachments.390/{ab76ba97-0bc3-49fa-8db4-20d9bb8fcb18}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">For the Network here, don't forget to select vmbr0 (the same interface than
+								the LAN on opnsense) and add the VLAN 30 with no firewall (we run opnsense on our own).
+								This will tag all the packets going out from the interface with VLAN 30, so opnsense
+								will detect this and manage the traffic comming from this VM, but we need to configure
+								it first !</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{4A5048B5-6D5E-44B6-BF53-7C4655BEF247}.png"
+									src=".attachments.390/{4a5048b5-6d5e-44b6-bf53-7c4655bef247}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{4A5048B5-6D5E-44B6-BF53-7C4655BEF247}.png"
+										src=".attachments.390/{4a5048b5-6d5e-44b6-bf53-7c4655bef247}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now with this done, you can create and power on your VM !</p>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Nextcloud Ubuntu configuration" dir="auto" class="heading"
+								id="Nextcloud_Ubuntu_configuration_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Nextcloud Ubuntu configuration</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto">In this part we are goning trought all the installation of the Nextcloud
+								Ubuntu VM ! </p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Install your Ubuntu by following the interactive install, if you need to
+								configure the network because you have taken a network install, just put the ip
+								10.0.3.2, gateway 10.0.3.1 and /24 ! Your ubuntu should automatically connect and have
+								access to internet ! If you have internet access issue, you can also configure DNS with
+								8.8.8.8 or 8.8.4.4 temporally ! </p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">once you are logged nito your fresh Ubuntu install first ubdate and upgrade it
+								:</p>
+						</div>
+						<div class="el-pre">
+							<pre><code data-line="0">sudo apt update &amp;&amp; sudo apt upgrade -y
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Then shutdown your VM and add the PCIE GPU device :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{336E6691-3D54-4B8C-8206-44CE673BC364}.png"
+									src=".attachments.390/{336e6691-3d54-4b8c-8206-44ce673bc364}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{336E6691-3D54-4B8C-8206-44CE673BC364}.png"
+										src=".attachments.390/{336e6691-3d54-4b8c-8206-44ce673bc364}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{86525BA8-51FD-411E-B3EB-1A8C9E1EB2A6}.png"
+									src=".attachments.390/{86525ba8-51fd-411e-b3eb-1a8c9e1eb2a6}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{86525BA8-51FD-411E-B3EB-1A8C9E1EB2A6}.png"
+										src=".attachments.390/{86525ba8-51fd-411e-b3eb-1a8c9e1eb2a6}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Restart the machine,</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">then install the nvidia driver with the Ubuntu Additional driver tools :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{1D553C05-969C-4546-93D0-03A0A0D32D73}.png"
+									src=".attachments.390/{1d553c05-969c-4546-93d0-03a0a0d32d73}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{1D553C05-969C-4546-93D0-03A0A0D32D73}.png"
+										src=".attachments.390/{1d553c05-969c-4546-93d0-03a0a0d32d73}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{ED30C32C-4CD8-4D81-8719-C34252D1ECA7}.png"
+									src=".attachments.390/{ed30c32c-4cd8-4d81-8719-c34252d1eca7}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{ED30C32C-4CD8-4D81-8719-C34252D1ECA7}.png"
+										src=".attachments.390/{ed30c32c-4cd8-4d81-8719-c34252d1eca7}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Once the driver installed, reboot one last time and you should be done and you
+								should see this in the nvidia X server settings app :</p>
+						</div>
+						<div class="el-p">
+							<p dir="auto"><span alt="{AC3859FC-171B-46CB-BBB3-3315D5D54BA1}.png"
+									src=".attachments.390/{ac3859fc-171b-46cb-bbb3-3315d5d54ba1}.png"
+									class="internal-embed media-embed image-embed is-loaded" target="_self"><img
+										alt="{AC3859FC-171B-46CB-BBB3-3315D5D54BA1}.png"
+										src=".attachments.390/{ac3859fc-171b-46cb-bbb3-3315d5d54ba1}.png"
+										target="_self"></span></p>
+						</div>
+						<div class="el-h2">
+							<h2 data-heading="Install docker" dir="auto" class="heading" id="Install_docker_0"><span
+									class="heading-collapse-indicator collapse-indicator collapse-icon"><svg
+										xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="svg-icon right-triangle">
+										<path d="M3 8L12 17L21 8"></path>
+									</svg></span>Install docker</h2>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Now i'll just folow the docker documentation and install it on my system :</p>
+						</div>
+						<div class="el-pre">
+							<pre><code data-line="0"># Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release &amp;&amp; echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+sudo apt-get update
+
+# sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# sudo usermod -aG docker tstraub
+</code><button class="copy-code-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="svg-icon lucide-copy"><rect x="8" y="8" width="14" height="14" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></button></pre>
+						</div>
+						<div class="el-p">
+							<p dir="auto">Don't forget to deconnect and reconnect into your account to apply the group
+								changes ! Try docker with :</p>
+						</div>
+						<div class="el-pre"></div>
+						<div class="el-p"></div>
+						<div class="el-h2"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-pre"></div>
+						<div class="el-p"></div>
+						<div class="el-pre"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-h2"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-h2"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-pre"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-h2"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-pre"></div>
+						<div class="el-p"></div>
+						<div class="el-h2"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="el-p"></div>
+						<div class="footer">
+							<div class="data-bar"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="right-content" class="leaf" style="--sidebar-width: var(--sidebar-width-right);">
+				<div id="right-sidebar" class="sidebar">
+					<div class="sidebar-handle"></div>
+					<div class="sidebar-topbar">
+						<div class="topbar-content"><label class="theme-toggle-container" for="theme-toggle-input"
+								id=""><input class="theme-toggle-input" type="checkbox" id="theme-toggle-input">
+								<div class="toggle-background"></div>
+							</label></div>
+						<div class="clickable-icon sidebar-collapse-icon"><svg xmlns="http://www.w3.org/2000/svg"
+								width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+								stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="svg-icon">
+								<path
+									d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3Z">
+								</path>
+								<path d="M10 4V20"></path>
+								<path d="M4 7H7"></path>
+								<path d="M4 10H7"></path>
+								<path d="M4 13H7"></path>
+							</svg></div>
+					</div>
+					<div class="sidebar-content-wrapper">
+						<div id="right-sidebar-content" class="leaf-content">
+							<div class="graph-view-wrapper">
+								<div class="feature-header">
+									<div class="feature-title">Interactive Graph</div>
+								</div>
+								<div class="graph-view-placeholder">
+									<div class="graph-view-container">
+										<div class="graph-icon graph-expand" role="button" aria-label="Expand"
+											data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg"
+												width="24" height="24" viewBox="0 0 24 24" fill="none"
+												stroke="currentColor" stroke-width="2" stroke-linecap="round"
+												stroke-linejoin="round" class="svg-icon">
+												<line x1="7" y1="17" x2="17" y2="7"></line>
+												<polyline points="7 7 17 7 17 17"></polyline>
+											</svg></div>
+										<div class="graph-icon graph-global" role="button" aria-label="Global Graph"
+											data-tooltip-position="top"><svg xmlns="http://www.w3.org/2000/svg"
+												width="24" height="24" viewBox="0 0 24 24" fill="none"
+												stroke="currentColor" stroke-width="2" stroke-linecap="round"
+												stroke-linejoin="round" class="svg-icon lucide-git-fork">
+												<circle cx="12" cy="18" r="3"></circle>
+												<circle cx="6" cy="6" r="3"></circle>
+												<circle cx="18" cy="6" r="3"></circle>
+												<path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path>
+												<path d="M12 12v3"></path>
+											</svg></div>
+										<canvas id="graph-canvas" class="hide" width="512px" height="512px"></canvas>
+									</div>
+								</div>
+							</div>
+							<div id="outline" class=" tree-container">
+								<div class="feature-header">
+									<div class="feature-title">Table Of Contents</div><button
+										class="clickable-icon nav-action-button tree-collapse-all"
+										aria-label="Collapse All"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+											height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+											stroke-width="2" stroke-linecap="round"
+											stroke-linejoin="round"></svg></button>
+								</div>
+								<div class="tree-item mod-collapsible" data-depth="1"><a
+										class="tree-item-self is-clickable mod-collapsible"
+										href="fyc-nextcloud.html#FYC_-_NEXTCLOUD_0" data-path="#FYC_-_NEXTCLOUD_0">
+										<div class="tree-item-icon collapse-icon"><svg
+												xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" stroke-linejoin="round"
+												class="svg-icon right-triangle">
+												<path d="M3 8L12 17L21 8"></path>
+											</svg></div>
+										<div class="tree-item-inner heading-link" heading-name="FYC - NEXTCLOUD">FYC -
+											NEXTCLOUD</div>
+									</a>
+									<div class="tree-item-children">
+										<div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable"
+												href="fyc-nextcloud.html#Global_architecture_0"
+												data-path="#Global_architecture_0">
+												<div class="tree-item-inner heading-link"
+													heading-name="Global architecture">Global architecture</div>
+											</a>
+											<div class="tree-item-children"></div>
+										</div>
+										<div class="tree-item mod-collapsible" data-depth="2"><a
+												class="tree-item-self is-clickable mod-collapsible"
+												href="fyc-nextcloud.html#Install_and_configure_Open_0"
+												data-path="#Install_and_configure_Open_0">
+												<div class="tree-item-icon collapse-icon"><svg
+														xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+														viewBox="0 0 24 24" fill="none" stroke="currentColor"
+														stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+														class="svg-icon right-triangle">
+														<path d="M3 8L12 17L21 8"></path>
+													</svg></div>
+												<div class="tree-item-inner heading-link"
+													heading-name="Install and configure Open">Install and configure Open
+												</div>
+											</a>
+											<div class="tree-item-children">
+												<div class="tree-item" data-depth="3"><a
+														class="tree-item-self is-clickable"
+														href="fyc-nextcloud.html#Opnsense_proxmox_config_0"
+														data-path="#Opnsense_proxmox_config_0">
+														<div class="tree-item-inner heading-link"
+															heading-name="Opnsense proxmox config">Opnsense proxmox
+															config</div>
+													</a>
+													<div class="tree-item-children"></div>
+												</div>
+											</div>
+										</div>
+										<div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable"
+												href="fyc-nextcloud.html#Opnsense_installation_0"
+												data-path="#Opnsense_installation_0">
+												<div class="tree-item-inner heading-link"
+													heading-name="Opnsense installation">Opnsense installation</div>
+											</a>
+											<div class="tree-item-children"></div>
+										</div>
+										<div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable"
+												href="fyc-nextcloud.html#Create_Vlans_and_LAN_interface_0"
+												data-path="#Create_Vlans_and_LAN_interface_0">
+												<div class="tree-item-inner heading-link"
+													heading-name="Create Vlans and LAN interface">Create Vlans and LAN
+													interface</div>
+											</a>
+											<div class="tree-item-children"></div>
+										</div>
+										<div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable"
+												href="fyc-nextcloud.html#Create_Nextcloud_Ubuntu_VM_0"
+												data-path="#Create_Nextcloud_Ubuntu_VM_0">
+												<div class="tree-item-inner heading-link"
+													heading-name="Create Nextcloud Ubuntu VM">Create Nextcloud Ubuntu VM
+												</div>
+											</a>
+											<div class="tree-item-children"></div>
+										</div>
+										<div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable"
+												href="fyc-nextcloud.html#Nextcloud_Ubuntu_configuration_0"
+												data-path="#Nextcloud_Ubuntu_configuration_0">
+												<div class="tree-item-inner heading-link"
+													heading-name="Nextcloud Ubuntu configuration">Nextcloud Ubuntu
+													configuration</div>
+											</a>
+											<div class="tree-item-children"></div>
+										</div>
+										<div class="tree-item" data-depth="2"><a class="tree-item-self is-clickable"
+												href="fyc-nextcloud.html#Install_docker_0"
+												data-path="#Install_docker_0">
+												<div class="tree-item-inner heading-link" heading-name="Install docker">
+													Install docker</div>
+											</a>
+											<div class="tree-item-children"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script
+						defer="">let rs = document.querySelector("#right-sidebar"); rs.classList.toggle("is-collapsed", window.innerWidth < 768); rs.style.setProperty("--sidebar-width", localStorage.getItem("sidebar-right-width"));</script>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
